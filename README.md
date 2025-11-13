@@ -5,6 +5,6 @@ Just a little tool to help me learn Python and Japanese :D
     & Windows 10 22H2
     & Python 3.13.1
 
-# Updates:
+# Updates :
 2025-11-13 21:40 :
     & Add mode : Guess Romaji from Hiragana
