@@ -8,3 +8,4 @@ Just a little tool to help me learn Python and Japanese :D
 # Updates :
 2025-11-13 21:40 :
     & Add mode : Guess Romaji from Hiragana
+    & Kill bugs
