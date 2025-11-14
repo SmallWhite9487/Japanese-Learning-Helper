@@ -1,5 +1,5 @@
 # Japanese-Learning-Helper
-![demo]([https://example.com/demo.gif](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcW43aGo0aWgweDdseHhnOTNqY2pudDEwNThuaGN0bjZ4amk1NHFibSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/d28k3pJ5YLzoY/giphy.gif))  
+![demo](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcW43aGo0aWgweDdseHhnOTNqY2pudDEwNThuaGN0bjZ4amk1NHFibSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/d28k3pJ5YLzoY/giphy.gif)
 Just a little tool to help me learn **Python** and **Japanese** :D  
 You can play some little games to help you learn Japanese :D  
 
