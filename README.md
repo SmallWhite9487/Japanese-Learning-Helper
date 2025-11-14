@@ -16,16 +16,18 @@ You can play some little games to help you learn Japanese :D
 - GUI interface  
 - Modes:  
     - Guess Romaji from Hiragana  
+    - Guess Romaji from Katakana  
 
 ---
 
 ## 🚀 Future Plans
 - Support more languages  
 - New modes:  
-    - Guess Romaji from Katakana  
     - Guess Hiragana from Romaji  
     - Guess Katakana from Romaji  
+    - Guess Katakana from Hiragana
 - Add pronunciation sounds  
+- Add difficulty options  
 - Remove Herobrine 👀  
 
 ---
@@ -38,6 +40,7 @@ You can play some little games to help you learn Japanese :D
 
 ## 📜 Update Logs
 - **2025-11-14**  
+    - Add mode: Guess Romaji from Katakana  
     - Rewrite functions  
     - Kill bugs 🐛  
 
