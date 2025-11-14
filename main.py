@@ -12,9 +12,6 @@ def initialization_ui():
     ui.iconbitmap("icon.ico")
     ui.resizable(False, False)
     ui.configure(bg="#dcdde1")
-    
-    width, height = 640, 480
-    set_screen_size(width, height)
 
 def set_screen_size(width, height):
     """
@@ -74,6 +71,10 @@ def load_data():
         print(f"[{debug_get_time()}] ERROR: load_data\n{e}")
 
 def page_mode():
+    """
+    Main page of the tool
+    """
+    set_screen_size(640, 480)
     clear_screen()
     tk.Label(ui, text="=Choose The Mode=", font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
     
@@ -106,31 +107,23 @@ def page_mode():
 
 def page_GRFH():
     def ramdom():
-        answers = []
-        new_h = random.choice(HKR_list["h"])
-        correct_r = HKR_dict["h"][new_h]
-        text_H.set(new_h)
-        all_romaji = HKR_list["r"]
-        wrong_choices = []
-        for r in all_romaji:
-            if r != correct_r:
-                wrong_choices.append(r)
-        random.shuffle(wrong_choices)
-
-        option1 = wrong_choices[0]
-        option2 = wrong_choices[1]
-        option3 = wrong_choices[2]
-        options = [correct_r, option1, option2, option3]
+        """
+        For ready the answer and options
+        """
+        answer_H = random.choice(HKR_list["h"])
+        text_H.set(answer_H)
+        options = [HKR_dict["h"][answer_H]]
+        while len(options) < 4:
+            temp = random.choice(HKR_list["h"])
+            if temp != answer_H and temp not in options:
+                options.append(HKR_dict["h"][temp])
         random.shuffle(options)
-        for opt in options:
-            answers.append(opt)
-
-        ans_1.set(answers[0])
-        ans_2.set(answers[1])
-        ans_3.set(answers[2])
-        ans_4.set(answers[3])
-
+        for i in range(4):
+            text_ans[i].set(options[i])
     def check(choice):
+        """
+        For check the answer
+        """
         nonlocal correct_times, wrong_times
         real_answer = HKR_dict["h"][text_H.get()]
         if choice == real_answer:
@@ -139,14 +132,17 @@ def page_GRFH():
             wrong_times += 1
         ramdom()
         text_scores.set(f"✔{correct_times} ✘{wrong_times}")
+    """
+    Mode page : Guess Romaji from Hiragana
+    """
     text_H = tk.StringVar()
     text_scores = tk.StringVar()
-    ans_1 = tk.StringVar()
-    ans_2 = tk.StringVar()
-    ans_3 = tk.StringVar()
-    ans_4 = tk.StringVar()
+    text_ans = []
+    for i in range(4):
+        text_ans.append(tk.StringVar())
     wrong_times = 0
     correct_times = 0
+    set_screen_size(640, 480)
     clear_screen()
     ramdom()
     tk.Label(ui, text="=Guess Romaji from Hiragana=", font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
@@ -158,10 +154,10 @@ def page_GRFH():
     scores.pack(side="top")
     
     options = tk.Frame(ui, bg="#dcdde1")
-    tk.Button(options, textvariable=ans_1, font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(ans_1.get())).pack(side="left", pady=5, padx=20)
-    tk.Button(options, textvariable=ans_2, font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(ans_2.get())).pack(side="left", pady=5, padx=20)
-    tk.Button(options, textvariable=ans_3, font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(ans_3.get())).pack(side="left", pady=5, padx=20)
-    tk.Button(options, textvariable=ans_4, font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(ans_4.get())).pack(side="left", pady=5, padx=20)
+    tk.Button(options, textvariable=text_ans[0], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[0].get())).pack(side="left", pady=5, padx=20)
+    tk.Button(options, textvariable=text_ans[1], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[1].get())).pack(side="left", pady=5, padx=20)
+    tk.Button(options, textvariable=text_ans[2], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[2].get())).pack(side="left", pady=5, padx=20)
+    tk.Button(options, textvariable=text_ans[3], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[3].get())).pack(side="left", pady=5, padx=20)
     options.pack(side="top")
     
     btn = tk.Frame(ui, bg="#dcdde1")
