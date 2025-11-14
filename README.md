@@ -37,9 +37,10 @@ You can play some little games to help you learn Japanese :D
 ---
 
 ## 📜 Update Logs
-- **2025-11-14 19:30**  
+- **2025-11-14**  
     - Rewrite functions  
+    - Kill bugs 🐛  
 
-- **2025-11-13 21:40**
+- **2025-11-13**
     - Add mode: Guess Romaji from Hiragana  
     - Kill bugs 🐛  
