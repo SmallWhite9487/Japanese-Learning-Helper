@@ -20,7 +20,7 @@ Just a little tool to help me learn the Python and the Japanese :D
     & Remove Herobrine
 
 # Update Logs:
-    & 2025-11-14 19:27 :
+    & 2025-11-14 19:30 :
         - Rewrite functions
     
     & 2025-11-13 21:40 :
