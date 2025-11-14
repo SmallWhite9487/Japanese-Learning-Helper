@@ -3,13 +3,14 @@ import json
 import os
 import time
 import random
+import sys
 
 def initialization_ui():
     """
     Initialization UI settings
     """
     ui.title("Japanese Learning Helper")
-    ui.iconbitmap("icon.ico")
+    ui.iconbitmap(resource_path("icon.ico"))
     ui.resizable(False, False)
     ui.configure(bg="#dcdde1")
 
@@ -40,6 +41,14 @@ def debug_get_time():
     ms = int((now - int(now)) * 1000)
     return f"{local_time}:{ms:03d}"
 
+def resource_path(relative_path):
+    """
+    Get file path
+    """
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.dirname(__file__), relative_path)
+
 def load_data():
     """
     Load file
@@ -53,7 +62,7 @@ def load_data():
             "HKR_list.txt": "list",}
     try:
         for fname, key in files.items():
-            path = os.path.join(os.getcwd(), "data", fname)
+            path = resource_path(os.path.join("data", fname))
             with open(path, "r", encoding="utf-8") as f:
                 if fname.endswith(".json"):
                     HKR_dict[key] = json.load(f)
@@ -161,7 +170,7 @@ def page_GRFH():
     options.pack(side="top")
     
     btn = tk.Frame(ui, bg="#dcdde1")
-    tk.Button(btn, text="=RESET=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, height=1, command=ramdom).pack(side="left", padx=40)
+    tk.Button(btn, text="=RESET=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, height=1, command=page_GRFH).pack(side="left", padx=40)
     tk.Button(btn, text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, height=1, command=page_mode).pack(side="left", padx=40)
     btn.pack(side="top", pady=15)
 
