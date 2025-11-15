@@ -79,6 +79,25 @@ def load_data():
     except Exception as e:
         print(f"[{debug_get_time()}] ERROR: load_data\n{e}")
 
+def page_difficulty(to_mode):
+    """
+    Difficulty selection page
+    """
+    def process(difficulty):
+        nonlocal to_mode
+        if to_mode in ("RFH","RFK"):
+            to_mode = page_RFHK(to_mode,difficulty)
+        else:
+            page_mode()
+    set_screen_size(560, 380)
+    clear_screen()
+
+    tk.Label(ui, text="=Choose The Difficulty=", font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
+    
+    tk.Button(ui, text="Easy", font=("Microsoft YaHei",16,"bold"), width=24, height=2, command=lambda:process("e")).pack(side="top", pady=10, padx=20)
+    tk.Button(ui, text="Medium", font=("Microsoft YaHei",16,"bold"), width=24, height=2, command=lambda:process("m")).pack(side="top", pady=10, padx=20)
+    tk.Button(ui, text="Hard", font=("Microsoft YaHei",16,"bold"), width=24, height=2, command=lambda:process("h")).pack(side="top", pady=10, padx=20)
+
 def page_mode():
     """
     Main page of the tool
@@ -88,8 +107,8 @@ def page_mode():
     tk.Label(ui, text="=Choose The Mode=", font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
     
     line1 = tk.Frame(ui, bg="#dcdde1")
-    tk.Button(line1, text="Guess Romaji from Hiragana", font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_RFHK("RFH")).pack(side="left", pady=10, padx=20)
-    tk.Button(line1, text="Guess Romaji from Katakana", font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_RFHK("RFK")).pack(side="left", pady=10, padx=20)
+    tk.Button(line1, text="Guess Romaji from Hiragana", font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("RFH")).pack(side="left", pady=10, padx=20)
+    tk.Button(line1, text="Guess Romaji from Katakana", font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("RFK")).pack(side="left", pady=10, padx=20)
     line1.pack()
     
     line2 = tk.Frame(ui, bg="#dcdde1")
@@ -109,14 +128,14 @@ def page_mode():
     
     line5 = tk.Frame(ui, bg="#dcdde1")
     tk.Button(line5, text="***", font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
-    tk.Button(line5, text="***", font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
+    tk.Button(line5, text="***", font=("Microsoft YaHei",12), width=24, height=2, command=page_difficulty).pack(side="left", pady=10, padx=20)
     line5.pack()
 
-def page_RFHK(mode="RFH"):
+def page_RFHK(mode="RFH",difficulty="e"):
+    """
+    Mode page : Guess Romaji from Hiragana/Katakana
+    """
     def ramdom():
-        """
-        For ready the answer and options
-        """
         answer = random.choice(temp_list)
         text_guess.set(answer)
         options = [temp_dict[answer]]
@@ -128,9 +147,6 @@ def page_RFHK(mode="RFH"):
         for i in range(4):
             text_ans[i].set(options[i])
     def check(choice):
-        """
-        For check the answer
-        """
         nonlocal correct_times, wrong_times
         real_answer = temp_dict[text_guess.get()]
         if choice == real_answer:
@@ -139,9 +155,7 @@ def page_RFHK(mode="RFH"):
             wrong_times += 1
         ramdom()
         text_scores.set(f"✔{correct_times} ✘{wrong_times}")
-    """
-    Mode page : Guess Romaji from Hiragana/Katakana
-    """
+
     temp_list = HKR_list["h"]
     temp_dict = HKR_dict["h"]
     title = "=Guess Romaji from Hiragana="
@@ -149,11 +163,13 @@ def page_RFHK(mode="RFH"):
         temp_list = HKR_list["k"]
         temp_dict = HKR_dict["k"]
         title = "=Guess Romaji from Katakana="
+
     text_guess = tk.StringVar()
     text_scores = tk.StringVar()
     text_ans = []
     for i in range(4):
         text_ans.append(tk.StringVar())
+
     wrong_times = 0
     correct_times = 0
     set_screen_size(640, 480)
@@ -180,7 +196,7 @@ def page_RFHK(mode="RFH"):
 
 def MAIN():
     """
-    Main
+    君指先跃动の光は、私の一生不変の信仰に、唯私の超電磁砲永世生き！
     """
     global ui
     ui = tk.Tk()
