@@ -139,12 +139,12 @@ def page_RFHK(mode="RFH",difficulty="e"):
         answer = random.choice(temp_list)
         text_guess.set(answer)
         options = [temp_dict[answer]]
-        while len(options) < 4:
+        while len(options) < len(text_ans):
             temp = random.choice(temp_list)
             if temp != answer and temp not in options:
                 options.append(temp_dict[temp])
         random.shuffle(options)
-        for i in range(4):
+        for i in range(len(text_ans)):
             text_ans[i].set(options[i])
     def check(choice):
         nonlocal correct_times, wrong_times
@@ -166,15 +166,13 @@ def page_RFHK(mode="RFH",difficulty="e"):
 
     text_guess = tk.StringVar()
     text_scores = tk.StringVar()
-    text_ans = []
-    for i in range(4):
-        text_ans.append(tk.StringVar())
+    text_ans = [tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar()]
 
     wrong_times = 0
     correct_times = 0
     set_screen_size(640, 480)
     clear_screen()
-    ramdom()
+    
     tk.Label(ui, text=title, font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
     tk.Label(ui, textvariable=text_guess, font=("Microsoft YaHei",80), relief="solid", bd=5, width=2, height=1).pack(side="top", pady=10)
     
@@ -182,18 +180,30 @@ def page_RFHK(mode="RFH",difficulty="e"):
     tk.Label(scores, textvariable=text_scores, font=("Microsoft YaHei",20),bg="#dcdde1").pack(side="top")
     scores.pack(side="top")
     
-    options = tk.Frame(ui, bg="#dcdde1")
-    tk.Button(options, textvariable=text_ans[0], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[0].get())).pack(side="left", pady=5, padx=20)
-    tk.Button(options, textvariable=text_ans[1], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[1].get())).pack(side="left", pady=5, padx=20)
-    tk.Button(options, textvariable=text_ans[2], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[2].get())).pack(side="left", pady=5, padx=20)
-    tk.Button(options, textvariable=text_ans[3], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[3].get())).pack(side="left", pady=5, padx=20)
-    options.pack(side="top")
+    if difficulty in ("e","m"):
+        options = tk.Frame(ui, bg="#dcdde1")
+        tk.Button(options, textvariable=text_ans[0], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[0].get())).pack(side="left", pady=5, padx=20)
+        tk.Button(options, textvariable=text_ans[1], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[1].get())).pack(side="left", pady=5, padx=20)
+        tk.Button(options, textvariable=text_ans[2], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[2].get())).pack(side="left", pady=5, padx=20)
+        tk.Button(options, textvariable=text_ans[3], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[3].get())).pack(side="left", pady=5, padx=20)
+        options.pack(side="top")
     
+    if difficulty == "m":
+        set_screen_size(640, 580)
+        text_ans += [tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar()]
+        options = tk.Frame(ui, bg="#dcdde1")
+        tk.Button(options, textvariable=text_ans[4], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[4].get())).pack(side="left", pady=5, padx=20)
+        tk.Button(options, textvariable=text_ans[5], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[5].get())).pack(side="left", pady=5, padx=20)
+        tk.Button(options, textvariable=text_ans[6], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[6].get())).pack(side="left", pady=5, padx=20)
+        tk.Button(options, textvariable=text_ans[7], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[7].get())).pack(side="left", pady=5, padx=20)
+        options.pack(side="top")
+    
+    ramdom()
     btn = tk.Frame(ui, bg="#dcdde1")
-    tk.Button(btn, text="=RESET=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, height=1, command=page_RFHK).pack(side="left", padx=40)
     tk.Button(btn, text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, height=1, command=page_mode).pack(side="left", padx=40)
     btn.pack(side="top", pady=15)
 
+    
 def MAIN():
     """
     君指先跃动の光は、私の一生不変の信仰に、唯私の超電磁砲永世生き！
