@@ -14,6 +14,7 @@ You can play some little games to help you learn Japanese :D
 ## ✨ Features
 - Language: English  
 - GUI interface  
+- Difficulty options 
 - Modes:  
     - Guess Romaji from Hiragana  
     - Guess Romaji from Katakana  
@@ -27,7 +28,6 @@ You can play some little games to help you learn Japanese :D
     - Guess Katakana from Romaji  
     - Guess Katakana from Hiragana
 - Add pronunciation sounds  
-- Add difficulty options  
 - Remove Herobrine 👀  
 
 ---
@@ -35,15 +35,3 @@ You can play some little games to help you learn Japanese :D
 ## 📂 Usage
 - Run `main.py`  
 - Use the whole `data` folder  
-
----
-
-## 📜 Update Logs
-- **2025-11-14**  
-    - Add mode: Guess Romaji from Katakana  
-    - Rewrite functions  
-    - Kill bugs 🐛  
-
-- **2025-11-13**
-    - Add mode: Guess Romaji from Hiragana  
-    - Kill bugs 🐛  
