@@ -138,18 +138,22 @@ def page_RFHK(mode="RFH",difficulty="e"):
     def ramdom():
         answer = random.choice(temp_list)
         text_guess.set(answer)
-        options = [temp_dict[answer]]
-        while len(options) < len(text_ans):
-            temp = random.choice(temp_list)
-            if temp != answer and temp not in options:
-                options.append(temp_dict[temp])
-        random.shuffle(options)
-        for i in range(len(text_ans)):
-            text_ans[i].set(options[i])
-    def check(choice):
+        if difficulty != "h":
+            options = [temp_dict[answer]]
+            while len(options) < len(text_ans):
+                temp = random.choice(temp_list)
+                if temp != answer and temp not in options:
+                    options.append(temp_dict[temp])
+            random.shuffle(options)
+            for i in range(len(text_ans)):
+                text_ans[i].set(options[i])
+        else:
+            text_ans[0].set("")
+    def check(feedback):
         nonlocal correct_times, wrong_times
         real_answer = temp_dict[text_guess.get()]
-        if choice == real_answer:
+        feedback = feedback.strip().lower()
+        if feedback == real_answer:
             correct_times += 1
         else:
             wrong_times += 1
@@ -166,8 +170,7 @@ def page_RFHK(mode="RFH",difficulty="e"):
 
     text_guess = tk.StringVar()
     text_scores = tk.StringVar()
-    text_ans = [tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar()]
-
+    
     wrong_times = 0
     correct_times = 0
     set_screen_size(640, 480)
@@ -181,6 +184,7 @@ def page_RFHK(mode="RFH",difficulty="e"):
     scores.pack(side="top")
     
     if difficulty in ("e","m"):
+        text_ans = [tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar()]
         options = tk.Frame(ui, bg="#dcdde1")
         tk.Button(options, textvariable=text_ans[0], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[0].get())).pack(side="left", pady=5, padx=20)
         tk.Button(options, textvariable=text_ans[1], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[1].get())).pack(side="left", pady=5, padx=20)
@@ -197,13 +201,21 @@ def page_RFHK(mode="RFH",difficulty="e"):
         tk.Button(options, textvariable=text_ans[6], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[6].get())).pack(side="left", pady=5, padx=20)
         tk.Button(options, textvariable=text_ans[7], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[7].get())).pack(side="left", pady=5, padx=20)
         options.pack(side="top")
+
+    if difficulty == "h":
+        text_ans = [tk.StringVar()]
+        options = tk.Frame(ui, bg="#dcdde1")
+        inp = tk.Entry(options, textvariable=text_ans[0],font=("Microsoft YaHei",28), relief="raised", bd=5, width=14)
+        inp.bind("<Return>", lambda event:check(text_ans[0].get()))
+        inp.pack(side="left", pady=10, padx=20)
+        tk.Button(options, text="=ENTER=", font=("Microsoft YaHei",18), relief="raised", bd=5, width=8, height=1, command=lambda:check(text_ans[0].get())).pack(side="left", pady=5, padx=5)
+        options.pack(side="top")
     
-    ramdom()
     btn = tk.Frame(ui, bg="#dcdde1")
     tk.Button(btn, text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, height=1, command=page_mode).pack(side="left", padx=40)
     btn.pack(side="top", pady=15)
+    ramdom()
 
-    
 def MAIN():
     """
     君指先跃动の光は、私の一生不変の信仰に、唯私の超電磁砲永世生き！
