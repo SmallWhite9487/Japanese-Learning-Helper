@@ -18,15 +18,14 @@ You can play some little games to help you learn Japanese :D
 - Modes:  
     - Guess Romaji from Hiragana  
     - Guess Romaji from Katakana  
-
+    - Guess Hiragana from Romaji  
+    - Guess Katakana from Romaji  
 ---
 
 ## 🚀 Future Plans
 - Support more languages  
 - New modes:  
-    - Guess Hiragana from Romaji  
-    - Guess Katakana from Romaji  
-    - Guess Katakana from Hiragana
+    - Guess Katakana from Hiragana  
 - Add pronunciation sounds  
 - Remove Herobrine 👀  
 
