@@ -177,6 +177,7 @@ def page_RFHK(mode="RFH",difficulty="e"):
     text_scores = tk.StringVar()
     wrong_times = 0
     correct_times = 0
+    create_boxs = 0
     set_screen_size(640, 480)
     clear_screen()
     
@@ -188,34 +189,33 @@ def page_RFHK(mode="RFH",difficulty="e"):
     scores.pack(side="top")
     
     if difficulty in ("e","m"):
-        text_ans = [tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar()]
-        options = tk.Frame(ui, bg="#dcdde1")
-        tk.Button(options, textvariable=text_ans[0], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[0].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[1], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[1].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[2], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[2].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[3], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[3].get())).pack(side="left", pady=5, padx=20)
-        options.pack(side="top")
-    
+        create_boxs = 4
     if difficulty == "m":
         set_screen_size(640, 580)
-        text_ans += [tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar()]
-        options = tk.Frame(ui, bg="#dcdde1")
-        tk.Button(options, textvariable=text_ans[4], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[4].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[5], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[5].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[6], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[6].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[7], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[7].get())).pack(side="left", pady=5, padx=20)
-        options.pack(side="top")
-
+        create_boxs = 8
     if difficulty == "h":
         text_ans = [tk.StringVar()]
         options = tk.Frame(ui, bg="#dcdde1")
+        
         inp = tk.Entry(options, textvariable=text_ans[0],font=("Microsoft YaHei",28), relief="raised", bd=5, width=14)
         inp.bind("<Return>", lambda event:check(text_ans[0].get()))
         inp.pack(side="left", pady=10, padx=20)
+        
         tk.Button(options, text="=ENTER=", font=("Microsoft YaHei",18), relief="raised", bd=5, width=8, height=1, command=lambda:check(text_ans[0].get())).pack(side="left", pady=5, padx=5)
         options.pack(side="top")
     
-    tk.Button(ui, text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, height=1, command=page_mode).pack(side="top", padx=40)
+    if difficulty != "h":
+        text_ans = []
+        for i in range(create_boxs):
+            text_ans += [tk.StringVar()]
+        for r in range(create_boxs // 4):
+            options = tk.Frame(ui, bg="#dcdde1")
+            options.pack(side="top")
+            for c in range(4):
+                i = r*4+c
+                tk.Button(options, textvariable=text_ans[i], font=("Microsoft YaHei",28),relief="raised", bd=5, width=4, height=1,command=lambda v=text_ans[i]: check(v.get())).pack(side="left", pady=5, padx=20)
+    
+    tk.Button(ui, text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, height=1, command=page_mode).pack(side="top",pady=10,padx=40)
     ramdom()
 
 def page_HKFR(mode="HFR",difficulty="e"): 
@@ -272,35 +272,26 @@ def page_HKFR(mode="HFR",difficulty="e"):
     scores.pack(side="top")
     
     if difficulty in ("e","m","h"):
-        text_ans = [tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar()]
-        options = tk.Frame(ui, bg="#dcdde1")
-        tk.Button(options, textvariable=text_ans[0], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[0].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[1], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[1].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[2], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[2].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[3], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[3].get())).pack(side="left", pady=5, padx=20)
-        options.pack(side="top")
-    
+        create_boxs = 4
     if difficulty in ("m","h"):
         set_screen_size(640, 580)
-        text_ans += [tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar()]
-        options = tk.Frame(ui, bg="#dcdde1")
-        tk.Button(options, textvariable=text_ans[4], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[4].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[5], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[5].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[6], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[6].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[7], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[7].get())).pack(side="left", pady=5, padx=20)
-        options.pack(side="top")
-
+        create_boxs = 8
     if difficulty == "h":
         set_screen_size(640, 660)
-        text_ans += [tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar()]
-        options = tk.Frame(ui, bg="#dcdde1")
-        tk.Button(options, textvariable=text_ans[8], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[8].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[9], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[9].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[10], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[10].get())).pack(side="left", pady=5, padx=20)
-        tk.Button(options, textvariable=text_ans[11], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, height=1, command=lambda:check(text_ans[11].get())).pack(side="left", pady=5, padx=20)
-        options.pack(side="top")
+        create_boxs = 12
 
-    tk.Button(text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, height=1, command=page_mode).pack(side="top", pady=10,padx=40)
+    text_ans = []
+    for i in range(create_boxs):
+        text_ans += [tk.StringVar()]
+
+    for r in range(create_boxs // 4):
+        options = tk.Frame(ui, bg="#dcdde1")
+        options.pack(side="top")
+        for c in range(4):
+            i = r*4+c
+            tk.Button(options, textvariable=text_ans[i], font=("Microsoft YaHei",28),relief="raised", bd=5, width=4, height=1,command=lambda v=text_ans[i]: check(v.get())).pack(side="left", pady=5, padx=20)
+
+    tk.Button(text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, height=1, command=page_mode).pack(side="top",pady=10,padx=40)
     ramdom()
 
 def MAIN():
