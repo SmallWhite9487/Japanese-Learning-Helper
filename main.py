@@ -79,6 +79,12 @@ def load_data():
     except Exception as e:
         print(f"[{debug_get_time()}] ERROR: load_data\n{e}")
 
+def language_system():
+    """
+    Language system
+    """
+    pass
+
 def page_difficulty(to_mode):
     """
     Difficulty selection page
@@ -299,6 +305,7 @@ def MAIN():
     君指先跃动の光は、私の一生不変の信仰に、唯私の超電磁砲永世生き！
     """
     global ui
+    language_system()
     ui = tk.Tk()
     initialization_ui()
     load_data()
