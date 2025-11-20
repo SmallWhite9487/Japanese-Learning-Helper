@@ -83,10 +83,10 @@ def language_system():
     """
     Language system
     """
-    global lang_get, lang_dict
+    global lang_get, lang_dict, lang_current
     
     lang_dict = {"en-us": {}, "zh-cn": {}, "zh-tw": {}}
-    files = {"lang_en-us.json": "en-us", 
+    files = {"lang_en-us.json": "en-us",  
             "lang_zh-cn.json": "zh-cn", 
             "lang_zh-tw.json": "zh-tw"}
     try:
@@ -94,18 +94,19 @@ def language_system():
             path = resource_path(os.path.join("data/lang", fname))
             with open(path, "r", encoding="utf-8") as f:
                 lang_dict[key] = json.load(f)
+
+        lang_current = "en-us"
         lang_get = lang_dict["en-us"]
     except Exception as e:
         print(f"[{debug_get_time()}] ERROR: language_system\n{e}")
 
-def change_lang(lang_code):
+def change_lang(lang_text):
     """
     Change language
     """
     global lang_get
-    languages = ["en-us","zh-cn","zh-tw"]
-    if lang_code in languages:
-        lang_get = lang_dict[lang_code]
+    print(f"[{debug_get_time()}] INFO: Change language to {lang_text}")
+
 
 def page_lang():
     """
@@ -113,14 +114,16 @@ def page_lang():
     """
     set_screen_size(420, 180)
     clear_screen()
-    tk.Label(ui, text="=Change The Language=", font=("Microsoft YaHei",20,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
+    tk.Label(ui, text=lang_get["page_lang_title"], font=("Microsoft YaHei",20,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
     
-    languages = ["en-us","zh-cn","zh-tw"]
-    value = tk.StringVar()
+    languages = ["en-us", "zh-cn", "zh-tw"]
+    value, display = tk.StringVar(), tk.StringVar()
+    
     value.set(languages[0])
+    display.set(languages[0])
 
-    menu = tk.OptionMenu(ui, value, *languages, command=lambda:change_lang(value.get()))
-    menu.config(font=("Microsoft YaHei",20), width=12, height=1)
+    menu = tk.OptionMenu(ui, display, *languages, command=lambda:change_lang(display.get()))
+    menu.config(font=("Microsoft YaHei",20), width=12)
     menu.pack()
     
     tk.Button(ui, text="=RETURN=", font=("Microsoft YaHei",14,"bold"), width=16, command=page_mode).pack(side="top", pady=10, padx=20)
@@ -228,7 +231,7 @@ def page_RFHK(mode="RFH",difficulty="e"):
     clear_screen()
     
     tk.Label(ui, text=title, font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
-    tk.Label(ui, textvariable=text_guess, font=("Microsoft YaHei",80), relief="solid", bd=5, width=2, height=1).pack(side="top", pady=10)
+    tk.Label(ui, textvariable=text_guess, font=("Microsoft YaHei",80), relief="solid", bd=5, width=2).pack(side="top", pady=10)
     
     scores = tk.Frame(ui, bg="#dcdde1")
     tk.Label(scores, textvariable=text_scores, font=("Microsoft YaHei",20),bg="#dcdde1").pack(side="top")
@@ -259,7 +262,7 @@ def page_RFHK(mode="RFH",difficulty="e"):
             options.pack(side="top")
             for c in range(4):
                 i = r*4+c
-                tk.Button(options, textvariable=text_ans[i], font=("Microsoft YaHei",28),relief="raised", bd=5, width=4, height=1,command=lambda v=text_ans[i]: check(v.get())).pack(side="left", pady=5, padx=20)
+                tk.Button(options, textvariable=text_ans[i], font=("Microsoft YaHei",28),relief="raised", bd=5, width=4,command=lambda v=text_ans[i]: check(v.get())).pack(side="left", pady=5, padx=20)
     
     tk.Button(ui, text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, command=page_mode).pack(side="top",pady=10,padx=40)
     ramdom()
@@ -335,7 +338,7 @@ def page_HKFR(mode="HFR",difficulty="e"):
         options.pack(side="top")
         for c in range(4):
             i = r*4+c
-            tk.Button(options, textvariable=text_ans[i], font=("Microsoft YaHei",28),relief="raised", bd=5, width=4, height=1,command=lambda v=text_ans[i]: check(v.get())).pack(side="left", pady=5, padx=20)
+            tk.Button(options, textvariable=text_ans[i], font=("Microsoft YaHei",28),relief="raised", bd=5, width=4,command=lambda v=text_ans[i]: check(v.get())).pack(side="left", pady=5, padx=20)
 
     tk.Button(text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, command=page_mode).pack(side="top",pady=10,padx=40)
     ramdom()
