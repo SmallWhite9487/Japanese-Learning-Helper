@@ -62,7 +62,7 @@ def load_data():
             "HKR_list.txt": "list",}
     try:
         for fname, key in files.items():
-            path = resource_path(os.path.join("data", fname))
+            path = resource_path(os.path.join("data/hkr", fname))
             with open(path, "r", encoding="utf-8") as f:
                 if fname.endswith(".json"):
                     HKR_dict[key] = json.load(f)
@@ -83,7 +83,47 @@ def language_system():
     """
     Language system
     """
-    pass
+    global lang_get, lang_dict
+    
+    lang_dict = {"en-us": {}, "zh-cn": {}, "zh-tw": {}}
+    files = {"lang_en-us.json": "en-us", 
+            "lang_zh-cn.json": "zh-cn", 
+            "lang_zh-tw.json": "zh-tw"}
+    try:
+        for fname, key in files.items():
+            path = resource_path(os.path.join("data/lang", fname))
+            with open(path, "r", encoding="utf-8") as f:
+                lang_dict[key] = json.load(f)
+        lang_get = lang_dict["en-us"]
+    except Exception as e:
+        print(f"[{debug_get_time()}] ERROR: language_system\n{e}")
+
+def change_lang(lang_code):
+    """
+    Change language
+    """
+    global lang_get
+    languages = ["en-us","zh-cn","zh-tw"]
+    if lang_code in languages:
+        lang_get = lang_dict[lang_code]
+
+def page_lang():
+    """
+    Language selection page
+    """
+    set_screen_size(420, 180)
+    clear_screen()
+    tk.Label(ui, text="=Change The Language=", font=("Microsoft YaHei",20,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
+    
+    languages = ["en-us","zh-cn","zh-tw"]
+    value = tk.StringVar()
+    value.set(languages[0])
+
+    menu = tk.OptionMenu(ui, value, *languages, command=lambda:change_lang(value.get()))
+    menu.config(font=("Microsoft YaHei",20), width=12, height=1)
+    menu.pack()
+    
+    tk.Button(ui, text="=RETURN=", font=("Microsoft YaHei",14,"bold"), width=16, command=page_mode).pack(side="top", pady=10, padx=20)
 
 def page_difficulty(to_mode):
     """
@@ -111,7 +151,7 @@ def page_mode():
     """
     Main page of the tool
     """
-    set_screen_size(640, 480)
+    set_screen_size(640, 460)
     clear_screen()
     tk.Label(ui, text="=Choose The Mode=", font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
     
@@ -136,8 +176,8 @@ def page_mode():
     line4.pack()
     
     line5 = tk.Frame(ui, bg="#dcdde1")
-    tk.Button(line5, text="***", font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
-    tk.Button(line5, text="***", font=("Microsoft YaHei",12), width=24, height=2, command=page_difficulty).pack(side="left", pady=10, padx=20)
+    tk.Button(line5, text="=Random=", font=("Microsoft YaHei",16), width=12, command=lambda:page_difficulty(random.choice(["RFH","RKF","HFR","KFR"]))).pack(side="left", pady=10, padx=20)
+    tk.Button(line5, text="=Language=", font=("Microsoft YaHei",16), width=12, command=page_lang).pack(side="left", pady=10, padx=20)
     line5.pack()
 
 def page_RFHK(mode="RFH",difficulty="e"):
@@ -207,7 +247,7 @@ def page_RFHK(mode="RFH",difficulty="e"):
         inp.bind("<Return>", lambda event:check(text_ans[0].get()))
         inp.pack(side="left", pady=10, padx=20)
         
-        tk.Button(options, text="=ENTER=", font=("Microsoft YaHei",18), relief="raised", bd=5, width=8, height=1, command=lambda:check(text_ans[0].get())).pack(side="left", pady=5, padx=5)
+        tk.Button(options, text="=ENTER=", font=("Microsoft YaHei",18), relief="raised", bd=5, width=8, command=lambda:check(text_ans[0].get())).pack(side="left", pady=5, padx=5)
         options.pack(side="top")
     
     if difficulty != "h":
@@ -221,7 +261,7 @@ def page_RFHK(mode="RFH",difficulty="e"):
                 i = r*4+c
                 tk.Button(options, textvariable=text_ans[i], font=("Microsoft YaHei",28),relief="raised", bd=5, width=4, height=1,command=lambda v=text_ans[i]: check(v.get())).pack(side="left", pady=5, padx=20)
     
-    tk.Button(ui, text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, height=1, command=page_mode).pack(side="top",pady=10,padx=40)
+    tk.Button(ui, text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, command=page_mode).pack(side="top",pady=10,padx=40)
     ramdom()
 
 def page_HKFR(mode="HFR",difficulty="e"): 
@@ -297,7 +337,7 @@ def page_HKFR(mode="HFR",difficulty="e"):
             i = r*4+c
             tk.Button(options, textvariable=text_ans[i], font=("Microsoft YaHei",28),relief="raised", bd=5, width=4, height=1,command=lambda v=text_ans[i]: check(v.get())).pack(side="left", pady=5, padx=20)
 
-    tk.Button(text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, height=1, command=page_mode).pack(side="top",pady=10,padx=40)
+    tk.Button(text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, command=page_mode).pack(side="top",pady=10,padx=40)
     ramdom()
 
 def MAIN():
