@@ -84,7 +84,6 @@ def language_system():
     Language system
     """
     global lang_get, lang_dict, lang_current
-    
     lang_dict = {"en-us": {}, "zh-cn": {}, "zh-tw": {}}
     files = {"lang_en-us.json": "en-us",  
             "lang_zh-cn.json": "zh-cn", 
@@ -100,29 +99,22 @@ def language_system():
     except Exception as e:
         print(f"[{debug_get_time()}] ERROR: language_system\n{e}")
 
-def change_lang(lang_text):
-    """
-    Change language
-    """
-    global lang_get
-    print(f"[{debug_get_time()}] INFO: Change language to {lang_text}")
-
-
 def page_lang():
     """
     Language selection page
     """
+    def change_lang(lang_code):
+        pass
     set_screen_size(420, 180)
     clear_screen()
     tk.Label(ui, text=lang_get["page_lang_title"], font=("Microsoft YaHei",20,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
     
     languages = ["en-us", "zh-cn", "zh-tw"]
-    value, display = tk.StringVar(), tk.StringVar()
+    value = tk.StringVar()
     
     value.set(languages[0])
-    display.set(languages[0])
 
-    menu = tk.OptionMenu(ui, display, *languages, command=lambda:change_lang(display.get()))
+    menu = tk.OptionMenu(ui, value, *languages, command=lambda event: change_lang(event))
     menu.config(font=("Microsoft YaHei",20), width=12)
     menu.pack()
     
