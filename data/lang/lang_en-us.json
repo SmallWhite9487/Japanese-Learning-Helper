@@ -1,4 +1,5 @@
 {
+    "common_btn_return": "=RETURN=", 
     "page_lang_title": "=Change The Language=", 
     "lang_en-us": "English (US)",
     "lang_zh-cn": "Simplified Chinese",
