@@ -10,7 +10,7 @@ def initialization_ui():
     Initialization UI settings
     """
     try:
-        ui.title("Japanese Learning Helper")
+        ui.title(lang_get["common_ui_title"])
         ui.iconbitmap(resource_path("icon.ico"))
         ui.resizable(False, False)
         ui.configure(bg="#dcdde1")
@@ -68,18 +68,23 @@ def load_data():
     Load file
     """
     try:
-        global HKR_dict, HKR_list
+        global HKR_dict, HKR_list, HTK_dict
         HKR_dict = {"h": {}, "k": {}, "r": {}}
         HKR_list = {"h": [], "k": [], "r": []}
+        HTK_dict = {}
         files = {"hiragana_to_romaji.json": "h",
                 "katakana_to_romaji.json": "k",
                 "romaji_to_kana.json": "r",
-                "HKR_list.txt": "list",}
+                "HKR_list.txt": "",
+                "hiragana_to_katakana.json": "",}
         for fname, key in files.items():
             path = resource_path(os.path.join("data/hkr", fname))
             with open(path, "r", encoding="utf-8") as f:
                 if fname.endswith(".json"):
-                    HKR_dict[key] = json.load(f)
+                    if key in ("h","k","r"):
+                        HKR_dict[key] = json.load(f)
+                    elif key == "":
+                        HTK_dict = json.load(f)
                 elif fname.endswith(".txt"):
                     lines = []
                     for line in f:
@@ -125,6 +130,7 @@ def page_lang():
                         lang_get[f"lang_{"zh-tw"}"]: "zh-tw"}
             lang_current = lang_NTI[lang_code]
             lang_get = lang_dict[lang_current]
+            ui.title(lang_get["common_ui_title"])
             print(f"[{debug_get_time()}] INFO: Change language to {lang_current}")
             page_lang()
         except Exception as e:
@@ -160,14 +166,16 @@ def page_difficulty(to_mode):
                 to_mode = page_RFHK(to_mode,difficulty)
             elif to_mode in ("HFR","KFR"):
                 to_mode = page_HKFR(to_mode,difficulty)
+            elif to_mode == "KFH":
+                to_mode = page_KFH(difficulty)
             else:
                 page_mode()
         except Exception as e:
             print(f"[{debug_get_time()}] ERROR: process\n{e}")
     try:
-        set_screen_size(560, 480)
+        set_screen_size(520, 460)
         clear_screen()
-        tk.Label(ui, text=lang_get["page_difficulty_title"], font=("Microsoft YaHei",25), bg="#dcdde1").pack(fill="x", side="top", pady=5)
+        tk.Label(ui, text=lang_get["page_difficulty_title"], font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
         
         tk.Button(ui, text=lang_get["difficulty_easy"], font=("Microsoft YaHei",16), width=24, height=2, command=lambda:process("e")).pack(side="top", pady=10, padx=20)
         tk.Button(ui, text=lang_get["difficulty_medium"], font=("Microsoft YaHei",16), width=24, height=2, command=lambda:process("m")).pack(side="top", pady=10, padx=20)
@@ -187,17 +195,17 @@ def page_mode():
         tk.Label(ui, text=lang_get["page_mode_title"], font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
         
         line1 = tk.Frame(ui, bg="#dcdde1")
-        tk.Button(line1, text=lang_get["mode_RTH"], font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("RFH")).pack(side="left", pady=10, padx=20)
-        tk.Button(line1, text=lang_get["mode_RTK"], font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("RFK")).pack(side="left", pady=10, padx=20)
+        tk.Button(line1, text=lang_get["mode_RFH"], font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("RFH")).pack(side="left", pady=10, padx=20)
+        tk.Button(line1, text=lang_get["mode_RFK"], font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("RFK")).pack(side="left", pady=10, padx=20)
         line1.pack()
         
         line2 = tk.Frame(ui, bg="#dcdde1")
-        tk.Button(line2, text=lang_get["mode_HTR"], font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("HFR")).pack(side="left", pady=10, padx=20)
-        tk.Button(line2, text=lang_get["mode_KTR"], font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("KFR")).pack(side="left", pady=10, padx=20)
+        tk.Button(line2, text=lang_get["mode_HFR"], font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("HFR")).pack(side="left", pady=10, padx=20)
+        tk.Button(line2, text=lang_get["mode_KFR"], font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("KFR")).pack(side="left", pady=10, padx=20)
         line2.pack()
         
         line3 = tk.Frame(ui, bg="#dcdde1")
-        tk.Button(line3, text=lang_get[""], font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
+        tk.Button(line3, text=lang_get["mode_KFH"], font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("KFH")).pack(side="left", pady=10, padx=20)
         tk.Button(line3, text=lang_get[""], font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
         line3.pack()
         
@@ -217,16 +225,16 @@ def page_RFHK(mode="RFH",difficulty="e"):
     """
     Mode page : Guess Romaji from Hiragana/Katakana
     """
-    def ramdom():
+    def random_options():
         try:
-            answer = random.choice(temp_list)
+            answer = random.choice(list_using)
             text_guess.set(answer)
             if difficulty != "h":
-                correct = temp_dict[answer]
+                correct = dict_using[answer]
                 wrong_choices = []
-                for t in temp_list:
+                for t in list_using:
                     if t != answer:
-                        wrong_choices.append(temp_dict[t])
+                        wrong_choices.append(dict_using[t])
                 count = len(text_ans) - 1
                 options = [correct] + random.sample(wrong_choices, count)
                 random.shuffle(options)
@@ -235,28 +243,28 @@ def page_RFHK(mode="RFH",difficulty="e"):
             else:
                 text_ans[0].set("")
         except Exception as e:
-            print(f"[{debug_get_time()}] ERROR: ramdom\n{e}")
+            print(f"[{debug_get_time()}] ERROR: random\n{e}")
     def check(feedback):
         try:
             nonlocal correct_times, wrong_times
-            real_answer = temp_dict[text_guess.get()]
+            real_answer = dict_using[text_guess.get()]
             feedback = feedback.strip().lower()
             if feedback == real_answer:
                 correct_times += 1
             else:
                 wrong_times += 1
-            ramdom()
+            random_options()
             text_scores.set(f"✔{correct_times} ✘{wrong_times}")
         except Exception as e:
             print(f"[{debug_get_time()}] ERROR: check\n{e}")
     try:
-        temp_list = HKR_list["h"]
-        temp_dict = HKR_dict["h"]
-        title = "=Guess Romaji from Hiragana="
+        list_using = HKR_list["h"]
+        dict_using = HKR_dict["h"]
+        title = lang_get["page_RFH_title"]
         if mode == "RFK":
-            temp_list = HKR_list["k"]
-            temp_dict = HKR_dict["k"]
-            title = "=Guess Romaji from Katakana="
+            list_using = HKR_list["k"]
+            dict_using = HKR_dict["k"]
+            title = lang_get["page_RFK_title"]
 
         text_guess = tk.StringVar()
         text_scores = tk.StringVar()
@@ -286,7 +294,7 @@ def page_RFHK(mode="RFH",difficulty="e"):
             inp.bind("<Return>", lambda event:check(text_ans[0].get()))
             inp.pack(side="left", pady=10, padx=20)
             
-            tk.Button(options, text="=ENTER=", font=("Microsoft YaHei",18), relief="raised", bd=5, width=8, command=lambda:check(text_ans[0].get())).pack(side="left", pady=5, padx=5)
+            tk.Button(options, text=lang_get["common_btn_enter"], font=("Microsoft YaHei",18), relief="raised", bd=5, width=8, command=lambda:check(text_ans[0].get())).pack(side="left", pady=5, padx=5)
             options.pack(side="top")
         
         if difficulty != "h":
@@ -300,8 +308,8 @@ def page_RFHK(mode="RFH",difficulty="e"):
                     i = r*4+c
                     tk.Button(options, textvariable=text_ans[i], font=("Microsoft YaHei",28),relief="raised", bd=5, width=4,command=lambda v=text_ans[i]: check(v.get())).pack(side="left", pady=5, padx=20)
         
-        tk.Button(ui, text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, command=page_mode).pack(side="top",pady=10,padx=40)
-        ramdom()
+        tk.Button(ui, text=lang_get["common_btn_return"], font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, command=page_mode).pack(side="top",pady=10,padx=40)
+        random_options()
     except Exception as e:
         print(f"[{debug_get_time()}] ERROR: page_RFHK\n{e}")
 
@@ -309,46 +317,46 @@ def page_HKFR(mode="HFR",difficulty="e"):
     """
     Mode page : Guess Hiragana/Katakana from Romaji
     """
-    def ramdom():
+    def random_options():
         try:
-            answer = random.choice(temp_list)
+            answer = random.choice(list_using)
             text_guess.set(answer)
-            correct = temp_dict[answer][temp_index]
+            correct = dict_using[answer][temp_index]
             options = [correct]
             wrong_choices = []
-            for t in temp_list:
+            for t in list_using:
                 if t != answer:
-                    wrong_choices.append(temp_dict[t][temp_index])
+                    wrong_choices.append(dict_using[t][temp_index])
             count = len(text_ans) - 1
             options += random.sample(wrong_choices, count)
             random.shuffle(options)
             for i in range(len(options)):
                 text_ans[i].set(options[i])
         except Exception as e:
-            print(f"[{debug_get_time()}] ERROR: ramdom\n{e}")
+            print(f"[{debug_get_time()}] ERROR: random\n{e}")
     def check(feedback):
         try:
             nonlocal correct_times, wrong_times
-            real_answer = temp_dict[text_guess.get()][temp_index]
+            real_answer = dict_using[text_guess.get()][temp_index]
             feedback = feedback.strip()
             if feedback == real_answer:
                 correct_times += 1
             else:
                 wrong_times += 1
-            ramdom()
+            random_options()
             text_scores.set(f"✔{correct_times} ✘{wrong_times}")
         except Exception as e:
             print(f"[{debug_get_time()}] ERROR: check\n{e}")
     try:
-        temp_list = HKR_list["r"]
-        temp_dict = HKR_dict["r"]
+        list_using = HKR_list["r"]
+        dict_using = HKR_dict["r"]
         temp_index = 0
-        title = "=Guess Hiragana from Romaji="
+        title = lang_get["page_HFR_title"]
         if mode == "KFR":
-            temp_list = HKR_list["r"]
-            temp_dict = HKR_dict["r"]
+            list_using = HKR_list["r"]
+            dict_using = HKR_dict["r"]
             temp_index = 1
-            title = "=Guess Katakana from Romaji="
+            title = lang_get["page_KFR_title"]
 
         text_guess = tk.StringVar()
         text_scores = tk.StringVar()
@@ -384,10 +392,101 @@ def page_HKFR(mode="HFR",difficulty="e"):
                 i = r*4+c
                 tk.Button(options, textvariable=text_ans[i], font=("Microsoft YaHei",28),relief="raised", bd=5, width=4,command=lambda v=text_ans[i]: check(v.get())).pack(side="left", pady=5, padx=20)
 
-        tk.Button(text="=RETURN=", font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, command=page_mode).pack(side="top",pady=10,padx=40)
-        ramdom()
+        tk.Button(text=lang_get["common_btn_return"], font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, command=page_mode).pack(side="top",pady=10,padx=40)
+        random_options()
     except Exception as e:
         print(f"[{debug_get_time()}] ERROR: page_HKFR\n{e}")
+
+def page_KFH(difficulty="e"):
+    """
+    Mode page : Guess Katakana from Hiragana
+    """
+    def random_options():
+        try:
+            answer = random.choice(list_using)
+            text_guess.set(answer)
+            if difficulty != "h":
+                correct = dict_using[answer]
+                wrong_choices = []
+                for t in list_using:
+                    if t != answer:
+                        wrong_choices.append(dict_using[t])
+                count = len(text_ans) - 1
+                options = [correct] + random.sample(wrong_choices, count)
+                random.shuffle(options)
+                for i in range(len(options)):
+                    text_ans[i].set(options[i])
+            else:
+                text_ans[0].set("")
+        except Exception as e:
+            print(f"[{debug_get_time()}] ERROR: random_options\n{e}")
+
+    def check(feedback):
+        try:
+            nonlocal correct_times, wrong_times
+            real_answer = dict_using[text_guess.get()]
+            feedback = feedback.strip()
+            if feedback == real_answer:
+                correct_times += 1
+            else:
+                wrong_times += 1
+            random_options()
+            text_scores.set(f"✔{correct_times} ✘{wrong_times}")
+        except Exception as e:
+            print(f"[{debug_get_time()}] ERROR: check\n{e}")
+
+    try:
+        list_using = HKR_list["h"]
+        dict_using = HTK_dict
+
+        text_guess = tk.StringVar()
+        text_scores = tk.StringVar()
+        wrong_times = 0
+        correct_times = 0
+        create_boxs = 0
+        set_screen_size(640, 480)
+        clear_screen()
+
+        tk.Label(ui, text=lang_get["page_KFH_title"], font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
+        tk.Label(ui, textvariable=text_guess, font=("Microsoft YaHei",80), relief="solid", bd=5, width=2).pack(side="top", pady=10)
+
+        scores = tk.Frame(ui, bg="#dcdde1")
+        tk.Label(scores, textvariable=text_scores, font=("Microsoft YaHei",20), bg="#dcdde1").pack(side="top")
+        scores.pack(side="top")
+
+        if difficulty in ("e", "m"):
+            create_boxs = 4
+        if difficulty == "m":
+            set_screen_size(640, 580)
+            create_boxs = 8
+        if difficulty == "h":
+            text_ans = [tk.StringVar()]
+            options = tk.Frame(ui, bg="#dcdde1")
+
+            inp = tk.Entry(options, textvariable=text_ans[0], font=("Microsoft YaHei",28), relief="raised", bd=5, width=14)
+            inp.bind("<Return>", lambda event: check(text_ans[0].get()))
+            inp.pack(side="left", pady=10, padx=20)
+
+            tk.Button(options, text=lang_get["common_btn_enter"], font=("Microsoft YaHei",18), relief="raised", bd=5, width=8, command=lambda: check(text_ans[0].get())).pack(side="left", pady=5, padx=5)
+            options.pack(side="top")
+
+        if difficulty != "h":
+            text_ans = []
+            for i in range(create_boxs):
+                text_ans.append(tk.StringVar())
+            for r in range(create_boxs // 4):
+                options = tk.Frame(ui, bg="#dcdde1")
+                options.pack(side="top")
+                for c in range(4):
+                    i = r * 4 + c
+                    tk.Button(options, textvariable=text_ans[i], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, command=lambda v=text_ans[i]: check(v.get())).pack(side="left", pady=5, padx=20)
+
+        tk.Button(ui, text=lang_get["common_btn_return"], font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, command=page_mode).pack(side="top", pady=10, padx=40)
+
+        random_options()
+    except Exception as e:
+        print(f"[{debug_get_time()}] ERROR: page_KFH\n{e}")
+
 
 def MAIN():
     """
