@@ -45,7 +45,7 @@ def resource_path(relative_path):
     """
     Get file path
     """
-    if hasattr(sys, '_MEIPASS'):
+    if hasattr(sys, "_MEIPASS"):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.dirname(__file__), relative_path)
 
@@ -103,19 +103,29 @@ def page_lang():
     """
     Language selection page
     """
-    def change_lang(lang_code):
-        pass
+    def change_lang(event):
+        global lang_get, lang_current
+        lang_NTI = {lang_get[f"lang_{"en-us"}"]: "en-us",
+                    lang_get[f"lang_{"zh-cn"}"]: "zh-cn",
+                    lang_get[f"lang_{"zh-cn"}"]: "zh-cn"}
+        lang_current = lang_NTI[value.get()]
+        lang_get = lang_dict[lang_current]
+        print(f"[{debug_get_time()}] INFO: Change language to {lang_current}")
+        page_lang()
     set_screen_size(420, 180)
     clear_screen()
     tk.Label(ui, text=lang_get["page_lang_title"], font=("Microsoft YaHei",20,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
     
     languages = ["en-us", "zh-cn", "zh-tw"]
+    for i in range(len(languages)):
+        languages[i] = lang_get[f"lang_{languages[i]}"]
+
     value = tk.StringVar()
     
     value.set(languages[0])
 
     menu = tk.OptionMenu(ui, value, *languages, command=lambda event: change_lang(event))
-    menu.config(font=("Microsoft YaHei",20), width=12)
+    menu.config(font=("Microsoft YaHei",20), width=18)
     menu.pack()
     
     tk.Button(ui, text="=RETURN=", font=("Microsoft YaHei",14,"bold"), width=16, command=page_mode).pack(side="top", pady=10, padx=20)
