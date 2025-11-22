@@ -1,7 +1,19 @@
 {
     "common_btn_return": "=返回=", 
     "page_lang_title": "=更換語言=", 
+    "common_btn_random": "=隨機=",
+    "common_btn_language": "=語言=",
+    "page_difficulty_title": "=選擇難度=",
+    "page_mode_title": "=選擇模式=",
+    "mode_RTH": "平假名猜羅馬字",
+    "mode_RTK": "片假名猜羅馬字",
+    "mode_HTR": "羅馬字猜平假名",
+    "mode_KTR": "羅馬字猜片假名",
+    "difficulty_easy": "簡單",
+    "difficulty_medium": "中等",
+    "difficulty_hard": "困難",
     "lang_en-us": "英語 (美國)",
     "lang_zh-cn": "簡體中文",
-    "lang_zh-tw": "繁體中文"
+    "lang_zh-tw": "繁體中文",
+    "": "[佔位符]"
 }

@@ -167,13 +167,13 @@ def page_difficulty(to_mode):
     try:
         set_screen_size(560, 480)
         clear_screen()
-        tk.Label(ui, text="=Choose The Difficulty=", font=("Microsoft YaHei",25), bg="#dcdde1").pack(fill="x", side="top", pady=5)
+        tk.Label(ui, text=lang_get["page_difficulty_title"], font=("Microsoft YaHei",25), bg="#dcdde1").pack(fill="x", side="top", pady=5)
         
-        tk.Button(ui, text="Easy", font=("Microsoft YaHei",16), width=24, height=2, command=lambda:process("e")).pack(side="top", pady=10, padx=20)
-        tk.Button(ui, text="Medium", font=("Microsoft YaHei",16), width=24, height=2, command=lambda:process("m")).pack(side="top", pady=10, padx=20)
-        tk.Button(ui, text="Hard", font=("Microsoft YaHei",16), width=24, height=2, command=lambda:process("h")).pack(side="top", pady=10, padx=20)
+        tk.Button(ui, text=lang_get["difficulty_easy"], font=("Microsoft YaHei",16), width=24, height=2, command=lambda:process("e")).pack(side="top", pady=10, padx=20)
+        tk.Button(ui, text=lang_get["difficulty_medium"], font=("Microsoft YaHei",16), width=24, height=2, command=lambda:process("m")).pack(side="top", pady=10, padx=20)
+        tk.Button(ui, text=lang_get["difficulty_hard"], font=("Microsoft YaHei",16), width=24, height=2, command=lambda:process("h")).pack(side="top", pady=10, padx=20)
         
-        tk.Button(ui, text="=RETURN=", font=("Microsoft YaHei",14), width=18, height=2, command=page_mode).pack(side="top", pady=10, padx=20)
+        tk.Button(ui, text=lang_get["common_btn_return"], font=("Microsoft YaHei",14), width=18, height=2, command=page_mode).pack(side="top", pady=10, padx=20)
     except Exception as e:
         print(f"[{debug_get_time()}] ERROR: page_difficulty\n{e}")
 
@@ -184,31 +184,31 @@ def page_mode():
     try:
         set_screen_size(640, 460)
         clear_screen()
-        tk.Label(ui, text="=Choose The Mode=", font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
+        tk.Label(ui, text=lang_get["page_mode_title"], font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
         
         line1 = tk.Frame(ui, bg="#dcdde1")
-        tk.Button(line1, text="Guess Romaji from Hiragana", font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("RFH")).pack(side="left", pady=10, padx=20)
-        tk.Button(line1, text="Guess Romaji from Katakana", font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("RFK")).pack(side="left", pady=10, padx=20)
+        tk.Button(line1, text=lang_get["mode_RTH"], font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("RFH")).pack(side="left", pady=10, padx=20)
+        tk.Button(line1, text=lang_get["mode_RTK"], font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("RFK")).pack(side="left", pady=10, padx=20)
         line1.pack()
         
         line2 = tk.Frame(ui, bg="#dcdde1")
-        tk.Button(line2, text="Guess Hiragana from Romaji", font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("HFR")).pack(side="left", pady=10, padx=20)
-        tk.Button(line2, text="Guess Katakana from Romaji", font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("KFR")).pack(side="left", pady=10, padx=20)
+        tk.Button(line2, text=lang_get["mode_HTR"], font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("HFR")).pack(side="left", pady=10, padx=20)
+        tk.Button(line2, text=lang_get["mode_KTR"], font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("KFR")).pack(side="left", pady=10, padx=20)
         line2.pack()
         
         line3 = tk.Frame(ui, bg="#dcdde1")
-        tk.Button(line3, text="***", font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
-        tk.Button(line3, text="***", font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
+        tk.Button(line3, text=lang_get[""], font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
+        tk.Button(line3, text=lang_get[""], font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
         line3.pack()
         
         line4 = tk.Frame(ui, bg="#dcdde1")
-        tk.Button(line4, text="***", font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
-        tk.Button(line4, text="***", font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
+        tk.Button(line4, text=lang_get[""], font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
+        tk.Button(line4, text=lang_get[""], font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
         line4.pack()
         
         line5 = tk.Frame(ui, bg="#dcdde1")
-        tk.Button(line5, text="=Random=", font=("Microsoft YaHei",16), width=12, command=lambda:page_difficulty(random.choice(["RFH","RKF","HFR","KFR"]))).pack(side="left", pady=10, padx=20)
-        tk.Button(line5, text="=Language=", font=("Microsoft YaHei",16), width=12, command=page_lang).pack(side="left", pady=10, padx=20)
+        tk.Button(line5, text=lang_get["common_btn_random"], font=("Microsoft YaHei",16), width=12, command=lambda:page_difficulty(random.choice(["RFH","RKF","HFR","KFR"]))).pack(side="left", pady=10, padx=20)
+        tk.Button(line5, text=lang_get["common_btn_language"], font=("Microsoft YaHei",16), width=12, command=page_lang).pack(side="left", pady=10, padx=20)
         line5.pack()
     except Exception as e:
         print(f"[{debug_get_time()}] ERROR: page_mode\n{e}")

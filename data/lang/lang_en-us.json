@@ -1,7 +1,19 @@
 {
-    "common_btn_return": "=RETURN=", 
+    "common_btn_return": "=Return=", 
+    "common_btn_random": "=Random=", 
+    "common_btn_language": "=Language=", 
     "page_lang_title": "=Change The Language=", 
+    "page_difficulty_title": "=Choose The Difficulty=",
+    "page_mode_title": "=Choose The Mode=",
+    "mode_RTH": "Guess Romaji from Hiragana",
+    "mode_RTK": "Guess Romaji from Katakana",
+    "mode_HTR": "Guess Hiragana from Romaji",
+    "mode_KTR": "Guess Katakana from Romaji",
+    "difficulty_easy": "Easy",
+    "difficulty_medium": "Medium",
+    "difficulty_hard": "Hard",
     "lang_en-us": "English (US)",
     "lang_zh-cn": "Simplified Chinese",
-    "lang_zh-tw": "Traditional Chinese"
+    "lang_zh-tw": "Traditional Chinese",
+    "": "Placeholder"
 }
