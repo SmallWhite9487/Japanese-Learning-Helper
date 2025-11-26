@@ -4,6 +4,7 @@ import os
 import time
 import random
 import sys
+import playsound
 
 def initialization_ui():
     """
@@ -211,7 +212,7 @@ def page_mode():
         
         line4 = tk.Frame(ui, bg="#dcdde1")
         tk.Button(line4, text=lang_get[""], font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
-        tk.Button(line4, text=lang_get[""], font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
+        tk.Button(line4, text=lang_get[""], font=("Microsoft YaHei",12), width=24, height=2, command=page_SAKN).pack(side="left", pady=10, padx=20)
         line4.pack()
         
         line5 = tk.Frame(ui, bg="#dcdde1")
@@ -420,7 +421,6 @@ def page_KFH(difficulty="e"):
                 text_ans[0].set("")
         except Exception as e:
             print(f"[{debug_get_time()}] ERROR: random_options\n{e}")
-
     def check(feedback):
         try:
             nonlocal correct_times, wrong_times
@@ -482,12 +482,66 @@ def page_KFH(difficulty="e"):
                     tk.Button(options, textvariable=text_ans[i], font=("Microsoft YaHei",28), relief="raised", bd=5, width=4, command=lambda v=text_ans[i]: check(v.get())).pack(side="left", pady=5, padx=20)
 
         tk.Button(ui, text=lang_get["common_btn_return"], font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, command=page_mode).pack(side="top", pady=10, padx=40)
-
         random_options()
     except Exception as e:
         print(f"[{debug_get_time()}] ERROR: page_KFH\n{e}")
 
+def page_SAKN():
+    def render_table(frame, kana_list):
+        try:
+            line = None
+            for idx, hira in enumerate(kana_list):
+                if idx % 5 == 0:
+                    line = tk.Frame(frame, bg="#dcdde1")
+                    line.pack(side="top")
 
+                kata = HTK_dict[hira]
+                romaji = HKR_dict["h"][hira]
+
+                item = tk.Frame(line, bg="#dcdde1", relief="solid", bd=1)
+                item.pack(side="left")
+
+                text = f"{hira}   {kata}\n{romaji}"
+                box = tk.Frame(item, bg="#dcdde1", relief="solid", bd=1)
+                tk.Button(box, text=text, font=("Microsoft YaHei",18), command=lambda t=text: play_sound(t), width=6, height=2).pack(padx=5, pady=5)
+                box.pack()
+
+            fill = len(kana_list) % 5
+            if fill != 0:
+                for i in range(5-fill):
+                    empty_item = tk.Frame(line, bg="#dcdde1", relief="solid", bd=1)
+                    empty_item.pack(side="left")
+                    box = tk.Frame(empty_item, bg="#dcdde1", relief="solid", bd=1)
+                    tk.Button(box, text="", font=("Microsoft YaHei",18), fg="#dcdde1", bg="#dcdde1", activeforeground="#dcdde1", state=tk.DISABLED, width=6, height=2).pack(padx=5, pady=5)
+                    box.pack()
+        except Exception as e:
+            print(f"[{debug_get_time()}] ERROR: render_table\n{e}")
+    def play_sound(text):
+        try:
+            print(text)
+        except Exception as e:
+            print(f"[{debug_get_time()}] ERROR: play_sound\n{e}")
+    try:
+        set_screen_size(1624, 1240)
+        clear_screen()
+        tk.Label(ui, text=lang_get[""], font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
+
+        first_part = HKR_list["h"][:46]
+        second_part = HKR_list["h"][46:]
+
+        whole_list = tk.Frame(ui, bg="#dcdde1")
+        whole_list.pack(pady=10, padx=10)
+
+        kana_list1 = tk.Frame(whole_list, bg="#dcdde1", relief="solid", bd=2)
+        kana_list1.pack(side="left", padx=10, anchor="n")
+
+        kana_list2 = tk.Frame(whole_list, bg="#dcdde1", relief="solid", bd=2)
+        kana_list2.pack(side="left", padx=10, anchor="n")
+
+        render_table(kana_list1, first_part)
+        render_table(kana_list2, second_part)
+    except Exception as e:
+        print(f"[{debug_get_time()}] ERROR: page_SAKN\n{e}")
 def MAIN():
     """
     君指先跃动の光は、私の一生不変の信仰に、唯私の超電磁砲永世生き！
