@@ -12,6 +12,8 @@
     "page_HFR_title": "=羅馬字猜平假名=",
     "page_KFR_title": "=羅馬字猜片假名=",
     "page_KFH_title": "=平假名猜片假名=",
+    "page_GC_title": "=五十音圖=",
+    "mode_GC": "五十音圖",
     "mode_RFH": "平假名猜羅馬字",
     "mode_RFK": "片假名猜羅馬字",
     "mode_HFR": "羅馬字猜平假名",

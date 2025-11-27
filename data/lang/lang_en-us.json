@@ -12,6 +12,8 @@
     "page_HFR_title": "=Guess Hiragana from Romaji=",
     "page_KFR_title": "=Guess Katakana from Romaji=",
     "page_KFH_title": "=Guess Katakana from Hiragana=",
+    "page_GC_title": "=Gojuon Chart=",
+    "mode_GC": "Gojuon Chart",
     "mode_RFH": "Guess Romaji from Hiragana",
     "mode_RFK": "Guess Romaji from Katakana",
     "mode_HFR": "Guess Hiragana from Romaji",

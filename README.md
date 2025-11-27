@@ -13,17 +13,18 @@ You can play some little games to help you learn Japanese :D
 - Language: English, Simplified Chinese, Traditional Chinese  
 - GUI interface  
 - Difficulty options 
+- Sounds of pronunciation  
 - Modes:  
     - Guess Romaji from Hiragana  
     - Guess Romaji from Katakana  
     - Guess Hiragana from Romaji  
     - Guess Katakana from Romaji  
     - Guess Katakana from Hiragana  
+    - Gojuon Chart  
 ---
 
 ## 🚀 Future Plans
 - Support more languages  
-- Add pronunciation sounds  
 - Remove Herobrine 👀  
 ---
 
