@@ -5,6 +5,7 @@ import time
 import random
 import sys
 import playsound
+import threading
 
 def initialization_ui():
     """
@@ -518,7 +519,10 @@ def page_SAKN():
             print(f"[{debug_get_time()}] ERROR: render_table\n{e}")
     def play_sound(text):
         try:
-            print(text)
+            romaji = text.split("\n")[1]
+            play_sound_path = resource_path(os.path.join("data/sounds", f"{romaji}.mp3"))
+            abs_path = os.path.abspath(play_sound_path)
+            threading.Thread(target=playsound.playsound, args=(abs_path, True), daemon=True).start()
         except Exception as e:
             print(f"[{debug_get_time()}] ERROR: play_sound\n{e}")
     try:
