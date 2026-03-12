@@ -6,7 +6,6 @@ It provides interactive mini-games and a graphical interface to make learning mo
 ---
 
 ## 🖥 Development Environment
-- Windows 10 22H2  
 - Python 3.13.1  
 - Tkinter + Pygame + gTTS + Janome  
 
@@ -16,7 +15,7 @@ It provides interactive mini-games and a graphical interface to make learning mo
 - **Multi-language support**: English, Simplified Chinese, Traditional Chinese  
 - **GUI interface**: clean and beginner-friendly  
 - **Difficulty levels**: Easy / Medium / Hard  
-- **Pronunciation**: kana reading with gTTS + Pygame  
+- **Pronunciation**: kana reading sounds  
 - **Learning modes**:
     - Guess Romaji from Hiragana  
     - Guess Romaji from Katakana  
@@ -24,7 +23,7 @@ It provides interactive mini-games and a graphical interface to make learning mo
     - Guess Katakana from Romaji  
     - Guess Katakana from Hiragana  
     - Gojuon chart (with pronunciation)  
-    - Verb conjugation practice (supports Ichidan, Godan, and irregular verbs)  
+    - Verb conjugation  
 
 ---
 
