@@ -1,11 +1,15 @@
+from janome.tokenizer import Tokenizer
+from gtts import gTTS
 import tkinter as tk
-import json
-import os
-import time
-import random
-import sys
-import playsound
 import threading
+import tempfile
+import random
+import pygame
+import json
+import time
+import sys
+import os
+import re
 
 def initialization_ui():
     """
@@ -133,7 +137,6 @@ def page_lang():
             lang_current = lang_NTI[lang_code]
             lang_get = lang_dict[lang_current]
             ui.title(lang_get["common_ui_title"])
-            print(f"[{debug_get_time()}] INFO: Change language to {lang_current}")
             page_lang()
         except Exception as e:
             print(f"[{debug_get_time()}] ERROR: change_lang\n{e}")
@@ -194,6 +197,7 @@ def page_mode():
     try:
         set_screen_size(640, 460)
         clear_screen()
+        ui.resizable(False,False)
         tk.Label(ui, text=lang_get["page_mode_title"], font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
         
         line1 = tk.Frame(ui, bg="#dcdde1")
@@ -208,7 +212,7 @@ def page_mode():
         
         line3 = tk.Frame(ui, bg="#dcdde1")
         tk.Button(line3, text=lang_get["mode_KFH"], font=("Microsoft YaHei",12), width=24, height=2, command=lambda:page_difficulty("KFH")).pack(side="left", pady=10, padx=20)
-        tk.Button(line3, text=lang_get[""], font=("Microsoft YaHei",12), width=24, height=2, command=page_mode).pack(side="left", pady=10, padx=20)
+        tk.Button(line3, text=lang_get["mode_VC"], font=("Microsoft YaHei",12), width=24, height=2, command=page_VC).pack(side="left", pady=10, padx=20)
         line3.pack()
         
         line4 = tk.Frame(ui, bg="#dcdde1")
@@ -538,34 +542,155 @@ def page_GC():
             print(f"[{debug_get_time()}] ERROR: render_table\n{e}")
     def play_sound(text):
         try:
-            romaji = text.split("\n")[1]
-            play_sound_path = resource_path(os.path.join("data/sounds", f"{romaji}.mp3"))
-            abs_path = os.path.abspath(play_sound_path)
-            threading.Thread(target=playsound.playsound, args=(abs_path,), daemon=True).start()
+            romaji = text[0]
+            tts = gTTS(text=romaji, lang='ja')
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as fp:
+                temp_path = fp.name
+                tts.save(temp_path)
+            pygame.mixer.init()
+            pygame.mixer.music.load(temp_path)
+            pygame.mixer.music.play()
+            def cleanup(path):
+                import time
+                while pygame.mixer.music.get_busy():
+                    time.sleep(0.1)
+                try:
+                    os.remove(path)
+                except Exception:
+                    pass
+            threading.Thread(target=cleanup, args=(temp_path,), daemon=True).start()
         except Exception as e:
             print(f"[{debug_get_time()}] ERROR: play_sound\n{e}")
+    def _on_mousewheel(event):
+        if event.state & 0x0001:
+            canvas.xview_scroll(-1 if event.delta > 0 else 1, "units")
+        else:
+            canvas.yview_scroll(-1 if event.delta > 0 else 1, "units")
     try:
-        set_screen_size(1280, 1240)
+        set_screen_size(800, 600)
         clear_screen()
+        ui.resizable(True,True)
         tk.Label(ui, text=lang_get["page_GC_title"], font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
+        container = tk.Frame(ui)
+        container.pack(fill="both", expand=True)
+        canvas = tk.Canvas(container, bg="#dcdde1")
+        v_scrollbar = tk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        h_scrollbar = tk.Scrollbar(container, orient="horizontal", command=canvas.xview)
+
+        canvas.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
+        v_scrollbar.pack(side="right", fill="y")
+        h_scrollbar.pack(side="bottom", fill="x")
+        canvas.pack(side="left", fill="both", expand=True)
+        scroll_frame = tk.Frame(canvas, bg="#dcdde1")
+        canvas.create_window((0,0), window=scroll_frame, anchor="nw")
+        scroll_frame.bind("<Configure>",lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
         first_part = HKR_list["h"][:46]
         second_part = HKR_list["h"][46:]
-
-        whole_list = tk.Frame(ui, bg="#dcdde1")
-        whole_list.pack(pady=5, padx=5)
-
-        kana_list1 = tk.Frame(whole_list, bg="#dcdde1", relief="solid", bd=2)
+        row_frame = tk.Frame(scroll_frame, bg="#dcdde1")
+        row_frame.pack(side="top", padx=20, pady=10)
+        kana_list1 = tk.Frame(row_frame, bg="#dcdde1", relief="solid", bd=2)
         kana_list1.pack(side="left", padx=20, anchor="n")
-
-        kana_list2 = tk.Frame(whole_list, bg="#dcdde1", relief="solid", bd=2)
-        kana_list2.pack(side="right", padx=20, anchor="n")
+        kana_list2 = tk.Frame(row_frame, bg="#dcdde1", relief="solid", bd=2)
+        kana_list2.pack(side="left", padx=20, anchor="n")
 
         render_table(kana_list1, first_part, use_format=True)
         render_table(kana_list2, second_part, use_format=False)
-        tk.Button(ui, text=lang_get["common_btn_return"], font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, command=page_mode).pack(side="top", pady=5)
+        canvas.bind_all("<MouseWheel>", _on_mousewheel)
+        canvas.bind_all("<Shift-MouseWheel>", _on_mousewheel)
+        tk.Button(ui, text=lang_get["common_btn_return"], font=("Microsoft YaHei",20),relief="raised", bd=2, width=10, command=page_mode).pack(side="top", pady=5)
     except Exception as e:
         print(f"[{debug_get_time()}] ERROR: page_GC\n{e}")
+
+def page_VC():
+    def conjugate_verb(verb):
+        if verb in irregular:
+            return irregular[verb]
+        tokens = list(t.tokenize(verb))
+        if not tokens:
+            return {}
+        token = tokens[0]
+        pos = token.part_of_speech.split(",")
+        base = token.base_form
+        infl_type = token.infl_type
+        if "一段" in infl_type:
+            stem = base[:-1]
+            return {"ます形": stem + "ます",
+                    "ない形": stem + "ない",
+                    "た形": stem + "た",
+                    "て形": stem + "て",
+                    "可能形": stem + "られる",
+                    "意志形": stem + "よう",
+                    "命令形": stem + "ろ／よ",
+                    "条件形": stem + "れば"}
+        if "五段" in infl_type:
+            stem = base[:-1]
+            last = base[-1]
+            if last in godan_rules:
+                r = godan_rules[last]
+                return {"ます形": stem + r["ます"],
+                        "ない形": stem + r["ない"],
+                        "た形": stem + r["た"],
+                        "て形": stem + r["て"],
+                        "可能形": stem + r["可能"],
+                        "意志形": stem + r["意志"],
+                        "命令形": stem + r["命令"],
+                        "条件形": stem + r["条件"]}
+        return None
+    godan_rules = {"う": {"ます":"います","ない":"わない","た":"った","て":"って","可能":"える","意志":"おう","命令":"え","条件":"えば"},
+                    "く": {"ます":"きます","ない":"かない","た":"いた","て":"いて","可能":"ける","意志":"こう","命令":"け","条件":"けば"},
+                    "ぐ": {"ます":"ぎます","ない":"がない","た":"いだ","て":"いで","可能":"げる","意志":"ごう","命令":"げ","条件":"げば"},
+                    "す": {"ます":"します","ない":"さない","た":"した","て":"して","可能":"せる","意志":"そう","命令":"せ","条件":"せば"},
+                    "つ": {"ます":"ちます","ない":"たない","た":"った","て":"って","可能":"てる","意志":"とう","命令":"て","条件":"てば"},
+                    "る": {"ます":"ります","ない":"らない","た":"った","て":"って","可能":"れる","意志":"ろう","命令":"れ","条件":"れば"},
+                    "む": {"ます":"みます","ない":"まない","た":"んだ","て":"んで","可能":"める","意志":"もう","命令":"め","条件":"めば"},
+                    "ぶ": {"ます":"びます","ない":"ばない","た":"んだ","て":"んで","可能":"べる","意志":"ぼう","命令":"べ","条件":"べば"},
+                    "ぬ": {"ます":"にます","ない":"なない","た":"んだ","て":"んで","可能":"ねる","意志":"のう","命令":"ね","条件":"ねば"},}
+    irregular = {"する": {"ます形":"します","ない形":"しない","た形":"した","て形":"して","可能形":"できる","意志形":"しよう","命令形":"しろ／せよ","条件形":"すれば"},
+                "来る": {"ます形":"来ます","ない形":"来ない","た形":"来た","て形":"来て","可能形":"来られる","意志形":"来よう","命令形":"来い","条件形":"来れば"},}
+    def isJapanese(text):
+        pattern = re.compile(r"^[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\uFF00-\uFFEF]+$")
+        return bool(pattern.match(text))
+    def on_change(*args):
+        nonlocal temp_entry
+        text = user_input.get()
+        if text != temp_entry and isJapanese(text):
+            result = conjugate_verb(text)
+            if result:
+                for idx, var in enumerate(verb_conjugate):
+                    var.set(result.get(list(result.keys())[idx], "—"))
+            temp_entry = text
+    try:
+        t = Tokenizer()
+        set_screen_size(820, 500)
+        clear_screen()
+        temp_entry = ""
+        user_input = tk.StringVar()
+        tk.Label(ui, text=lang_get["page_VC_title"], font=("Microsoft YaHei",25,"bold"), bg="#dcdde1").pack(fill="x", side="top", pady=5)
+        entry = tk.Entry(ui, textvariable=user_input, font=("Microsoft YaHei",30), relief="solid", bd=5, width=24, justify="center")
+        entry.bind("<KeyRelease>", lambda e: on_change())
+        entry.pack(side="top", pady=5)
+        tk.Label(ui, text=lang_get["page_VC_entry"], font=("Microsoft YaHei",12), bg="#dcdde1").pack(fill="x", side="top", pady=5)
+
+        verb_conjugate = []
+        for i in range(8):
+            verb_conjugate += [tk.StringVar()]
+
+        labels = [lang_get["page_VC_PF"],lang_get["page_VC_NF"],lang_get["page_VC_PaF"],lang_get["page_VC_CF"],lang_get["page_VC_PoF"],lang_get["page_VC_VF"],lang_get["page_VC_IF"],lang_get["page_VC_CoF"]]
+        count = 0
+        for i in range(2):
+            line = tk.Frame(ui, bg="#dcdde1")
+            for j in range(4):
+                blank = tk.Frame(line, bg="#dcdde1")
+                tk.Label(blank, text=labels[count], font=("Microsoft YaHei",12,"bold"), bg="#dcdde1", width=15, justify="center").pack(side="top", padx=5, pady=5)
+                tk.Label(blank, textvariable=verb_conjugate[count], font=("Microsoft YaHei",18), relief="solid", bd=2, width=12, height=2, justify="center").pack(side="top", padx=5, pady=5)
+                blank.pack(side="left")
+                count += 1
+            line.pack(side="top")
+        tk.Button(ui, text=lang_get["common_btn_return"], font=("Microsoft YaHei",20), relief="raised", bd=2, width=10, command=page_mode).pack(side="top", pady=10)
+    except Exception as e:
+        print(f"[{debug_get_time()}] ERROR: page_VC\n{e}")
+
 def MAIN():
     """
     君指先跃动の光は、私の一生不変の信仰に、唯私の超電磁砲永世生き！
